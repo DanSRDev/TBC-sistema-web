@@ -3,6 +3,7 @@
 import React, { useState, useRef, ChangeEvent } from "react";
 
 import * as tf from "@tensorflow/tfjs";
+import { clsx } from "clsx";
 
 type Props = {};
 
@@ -10,7 +11,7 @@ export default function Prediction({}: Props) {
   const [predictionResult, setPredictionResult] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>("");
   const [imgDisplay, setImgDisplay] = useState<string>("disabled");
-  const [btnDisabled, setBtnDisabled] = useState<string>("bg-neutral-500");
+  const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const imageRef = useRef(null);
 
   // Carga de modelos
@@ -21,7 +22,7 @@ export default function Prediction({}: Props) {
     console.log("Modelo cargado...");
     return model;
   }
-  
+
   async function loadModelMv() {
     console.log("Cargando modelo...");
     const model = await tf.loadGraphModel("/modelmv/model.json");
@@ -52,7 +53,6 @@ export default function Prediction({}: Props) {
   }
 
   function preprocess(tensor: tf.Tensor3D) {
-
     // Cambiamos el tamaño de la imagen a 224x224
     const resized = tf.image.resizeBilinear(tensor, [224, 224]);
     console.log("img reshaped " + resized.shape);
@@ -82,13 +82,15 @@ export default function Prediction({}: Props) {
         if (e.target?.result) {
           setImageSrc(e.target.result as string);
           setImgDisplay("");
-          setBtnDisabled("bg-blue-600 hover:bg-blue-400");
+          setBtnDisabled(false);
         }
       };
 
       reader.readAsDataURL(file);
     }
   }
+
+  //
 
   // Realizar diagnostico
 
@@ -107,11 +109,15 @@ export default function Prediction({}: Props) {
     }
 
     // Realiza la inferencia con el modelo.
-    const predictions = await (model.predict(processedImage)as tf.Tensor).dataSync();
+    const predictions = await (
+      model.predict(processedImage) as tf.Tensor
+    ).dataSync();
     const predictionsArray = Array.from(predictions);
-    
+
     // Encuentra la clase con la probabilidad más alta
-    const maxIndex = predictions.indexOf(Math.max.apply(null, predictionsArray));
+    const maxIndex = predictions.indexOf(
+      Math.max.apply(null, predictionsArray)
+    );
 
     // Definición de clases
     const classes = ["Normal", "Tuberculosis"];
@@ -151,7 +157,7 @@ export default function Prediction({}: Props) {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-5xl font-semibold mb-16">Módulo de Detección</h1>
+      <h1 className="text-5xl font-semibold mb-16">Módulo de Diagnóstico</h1>
       <div className="switch-container text-center">
         <label className="switch">
           <input
@@ -178,15 +184,23 @@ export default function Prediction({}: Props) {
             onChange={handleFileChange}
             className="disabled"
           />
-          <label htmlFor="fileInput" className="button bg-blue-600 hover:bg-blue-400">
+          <label
+            htmlFor="fileInput"
+            className="button bg-blue-600 hover:bg-blue-400"
+          >
             Cargar imagen
           </label>
           <button
             id="predictButton"
             onClick={handlePredictClick}
-            className={`button mt-6 ${btnDisabled}`}
+            className={clsx(
+              `button mt-6`,
+              { "bg-neutral-500 opacity-50": btnDisabled },
+              { "bg-blue-600 hover:bg-blue-400": !btnDisabled }
+            )}
+            disabled={btnDisabled}
           >
-            Realizar Inferencia
+            Realizar Diagnóstico
           </button>
         </div>
       </div>
