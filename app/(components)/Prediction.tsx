@@ -21,6 +21,7 @@ export default function Prediction({}: Props) {
     console.log("Modelo cargado...");
     return model;
   }
+  
   async function loadModelMv() {
     console.log("Cargando modelo...");
     const model = await tf.loadGraphModel("modelmv/model.json");
@@ -36,20 +37,8 @@ export default function Prediction({}: Props) {
 
     console.log("img original " + tensor.shape);
 
-    // Cambiamos el tamaño de la imagen a 224x224
-    const resized = tf.image.resizeBilinear(tensor, [224, 224]);
-    console.log("img reshaped " + resized.shape);
-
-    const offset = tf.scalar(255.0);
-
-    // Normalizamos la imagen
-    const normalized = tf.scalar(1.0).sub(resized.div(offset));
-    console.log("img normalized " + normalized.shape);
-
-    const batched = normalized.expandDims(0);
-    console.log("img batched " + batched.shape);
-
-    return batched;
+    const processedImage = preprocess(tensor);
+    return processedImage;
   }
 
   function preprocessImageMv(image: HTMLImageElement) {
@@ -57,6 +46,12 @@ export default function Prediction({}: Props) {
     const tensor = tf.browser.fromPixels(image);
 
     console.log("img original " + tensor.shape);
+
+    const processedImage = preprocess(tensor);
+    return processedImage;
+  }
+
+  function preprocess(tensor: tf.Tensor3D) {
 
     // Cambiamos el tamaño de la imagen a 224x224
     const resized = tf.image.resizeBilinear(tensor, [224, 224]);
@@ -114,6 +109,7 @@ export default function Prediction({}: Props) {
     // Realiza la inferencia con el modelo.
     const predictions = await (model.predict(processedImage)as tf.Tensor).dataSync();
     const predictionsArray = Array.from(predictions);
+    
     // Encuentra la clase con la probabilidad más alta
     const maxIndex = predictions.indexOf(Math.max.apply(null, predictionsArray));
 
