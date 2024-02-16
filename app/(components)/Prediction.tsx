@@ -17,14 +17,14 @@ export default function Prediction({}: Props) {
 
   async function loadModel() {
     console.log("Cargando modelo...");
-    const model = await tf.loadLayersModel("model/model.json");
+    const model = await tf.loadLayersModel("/model/model.json");
     console.log("Modelo cargado...");
     return model;
   }
   
   async function loadModelMv() {
     console.log("Cargando modelo...");
-    const model = await tf.loadGraphModel("modelmv/model.json");
+    const model = await tf.loadGraphModel("/modelmv/model.json");
     console.log("Modelo cargado...");
     return model;
   }
