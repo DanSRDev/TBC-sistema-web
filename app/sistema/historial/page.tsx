@@ -25,6 +25,14 @@ export default async function Historial({}: Props) {
 
 
   return (
-    <div>Historial</div>
+    <div>
+      <div>
+        <h1>Escoger paciente</h1>
+        <input></input>
+      </div>
+      <div>
+        Tabla
+      </div>
+    </div>
   )
 }
