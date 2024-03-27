@@ -45,12 +45,12 @@ export async function fetchDiagnosticos() {
   }
 }
 
-
 export async function fetchDiagnosticosDashboard() {
   noStore();
 
   try {
-    const data = await sql<DiagnosticoDashboard>`SELECT diagnosticos.fecha, diagnosticos.resultado FROM diagnosticos`;
+    const data =
+      await sql<DiagnosticoDashboard>`SELECT diagnosticos.fecha, diagnosticos.resultado FROM diagnosticos`;
     return data.rows;
   } catch (error) {
     console.error("Database Error:", error);
@@ -74,6 +74,21 @@ export async function fetchDiagnoticosPaciente(id: string) {
   }
 }
 
+export async function fetchPacientesList() {
+  noStore();
+
+  try {
+    const data =
+      await sql<Paciente>`
+        SELECT pacientes.id, pacientes.nombres, pacientes.apellidos
+        FROM pacientes
+        ORDER BY pacientes.apellidos ASC`;
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch pacientes data list.");
+  }
+}
 
 export async function fetchFilteredPacientes(query: string) {
   noStore();

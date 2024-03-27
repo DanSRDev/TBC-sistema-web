@@ -1,4 +1,4 @@
-'use client';
+/* 'use client';
 
 export default function Search({ placeholder }: { placeholder: string }) {
 
@@ -20,4 +20,4 @@ export default function Search({ placeholder }: { placeholder: string }) {
       />
     </div>
   );
-}
+} */
