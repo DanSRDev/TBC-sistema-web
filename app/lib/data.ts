@@ -80,7 +80,7 @@ export async function fetchPacientesList() {
   try {
     const data =
       await sql<Paciente>`
-        SELECT pacientes.id, pacientes.nombres, pacientes.apellidos
+        SELECT pacientes.id, pacientes.dni, pacientes.nombres, pacientes.apellidos
         FROM pacientes
         ORDER BY pacientes.apellidos ASC`;
     return data.rows;
