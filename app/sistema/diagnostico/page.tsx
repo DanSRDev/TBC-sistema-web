@@ -1,5 +1,4 @@
 import React from "react";
-import ModuloDiagnostico from "@/app/(components)/ui/diagnostico/ModuloDiagnostico";
 import { fetchPacientesList } from "@/app/lib/data";
 import PacienteDiagnostico from "@/app/(components)/ui/diagnostico/PacienteDiagnostico";
 
@@ -16,7 +15,6 @@ export default async function Diagnostico({ searchParams }: SearchParamProps) {
     <div className="flex flex-col items-center w-full h-full mx-4">
       <h1 className="my-8 text-5xl font-semibold">Módulo de Diagnóstico</h1>
       <PacienteDiagnostico pacientes={pacientes} agregar={agregar} escoger ={escoger}/>
-      <ModuloDiagnostico />
     </div>
   );
 }

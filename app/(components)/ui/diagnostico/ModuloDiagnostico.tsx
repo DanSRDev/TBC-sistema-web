@@ -1,20 +1,26 @@
-"use client";
 import React, { ChangeEvent, useRef, useState } from "react";
 import { clsx } from "clsx";
-
 import { handlePredictClick } from "@/app/lib/diagnose";
+import { createDiagnostico } from "@/app/lib/actions";
 
-type Props = {};
+type Props = {
+  pacienteId: string | undefined;
+};
 
-export default function ModuloDiagnostico({}: Props) {
+export default function ModuloDiagnostico({ pacienteId }: Props) {
   const [predictionResult, setPredictionResult] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>("");
   const [imgDisplay, setImgDisplay] = useState<string>("disabled");
-  const [btnDisabled, setBtnDisabled] = useState<boolean>(true);
   const imageRef = useRef(null);
 
   const [switchState, setSwitchState] = useState<boolean>(false);
   const [usedModel, setUsedModel] = useState<string>("Basic Model");
+
+  if (pacienteId === undefined && imageSrc !== "") {
+    setImgDisplay("disabled");
+    setImageSrc("");
+    setPredictionResult("");
+  }
 
   const handleSwitchToggle = () => {
     setSwitchState(!switchState);
@@ -24,7 +30,6 @@ export default function ModuloDiagnostico({}: Props) {
       setUsedModel("MobileNet");
     }
   };
-
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     setPredictionResult(""); // Reinicia el resultado de la predicción
@@ -37,7 +42,6 @@ export default function ModuloDiagnostico({}: Props) {
         if (e.target?.result) {
           setImageSrc(e.target.result as string);
           setImgDisplay("");
-          setBtnDisabled(false);
         }
       };
 
@@ -49,6 +53,9 @@ export default function ModuloDiagnostico({}: Props) {
     const result = await handlePredictClick(imageSrc, imageRef, switchState);
     if (result) {
       setPredictionResult("Resultado de la detección: " + result);
+    }
+    if (result && pacienteId) {
+      await createDiagnostico(pacienteId, result);
     }
   };
 
@@ -77,12 +84,20 @@ export default function ModuloDiagnostico({}: Props) {
           <input
             type="file"
             id="fileInput"
-            onChange={handleFileChange}
+            onChange={(event) => {
+              handleFileChange(event);
+              event.target.value = "";
+            }}
             className="disabled"
+            disabled={pacienteId == undefined}
           />
           <label
             htmlFor="fileInput"
-            className="button bg-blue-600 hover:bg-blue-400"
+            className={clsx(
+              "button",
+              { "bg-neutral-300 ": pacienteId == undefined },
+              { "bg-blue-600 hover:bg-blue-400": pacienteId != undefined }
+            )}
           >
             Cargar imagen
           </label>
@@ -91,10 +106,13 @@ export default function ModuloDiagnostico({}: Props) {
             onClick={handleClick}
             className={clsx(
               `button mt-6`,
-              { "bg-neutral-300 ": btnDisabled },
-              { "bg-blue-600 hover:bg-blue-400": !btnDisabled }
+              { "bg-neutral-300 ": imageSrc == "" || pacienteId == undefined },
+              {
+                "bg-blue-600 hover:bg-blue-400":
+                  imageSrc != "" && pacienteId != undefined,
+              }
             )}
-            disabled={btnDisabled}
+            disabled={imageSrc == "" || pacienteId == undefined}
           >
             Realizar Diagnóstico
           </button>

@@ -4,7 +4,6 @@ import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-
 export type State = {
   errors?: {
     dni?: string;
@@ -16,7 +15,7 @@ export type State = {
 };
 
 export async function createPaciente(formData: FormData) {
-
+  // Prepare data for insertion into the database
   const dni = formData.get("dni")?.toString();
   const nombres = formData.get("nombres")?.toString();
   const apellidos = formData.get("apellidos")?.toString();
@@ -35,7 +34,28 @@ export async function createPaciente(formData: FormData) {
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath("/sistema/diagnostico");
+  redirect("/sistema/diagnostico");
+}
+
+export async function createDiagnostico(pacienteId: string, resultado: string) {
+  // Prepare data for insertion into the database
+  const doctorId = "410544b2-4001-4271-9855-fec4b6a6400a";
+  const fecha = new Date().toISOString().split("T")[0];
+
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO diagnosticos (doctor_id, paciente_id, fecha, resultado)
+      VALUES (${doctorId}, ${pacienteId}, ${fecha}, ${resultado})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: "Database Error: Failed to Create Invoice.",
+    };
+  }
+
   revalidatePath("/sistema/diagnostico");
   redirect("/sistema/diagnostico");
 }
