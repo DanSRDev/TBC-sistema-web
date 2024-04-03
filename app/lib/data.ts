@@ -6,6 +6,7 @@ import {
   DiagnosticoDashboard,
   DiagnosticosPaciente,
   FilteredPacientes,
+  DiagnosticoHistorial,
 } from "./definitions";
 import { unstable_noStore as noStore } from "next/cache";
 
@@ -44,6 +45,25 @@ export async function fetchDiagnosticos() {
     throw new Error("Failed to fetch diagnosticos data.");
   }
 }
+
+export async function fetchHistorialDiagnosticos() {
+  noStore();
+
+  try {
+    const data = await sql<DiagnosticoHistorial>`
+      SELECT diag.id, d.nombres as doc_nombres, d.apellidos as doc_apellidos, p.nombres as pac_nombres, p.apellidos as pac_apellidos, diag.fecha, diag.resultado 
+      FROM diagnosticos diag
+      LEFT JOIN doctores d ON diag.doctor_id = d.id
+      LEFT JOIN pacientes p ON diag.paciente_id = p.id
+      ORDER BY diag.fecha
+      `;
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch diagnosticos data.");
+  }
+}
+
 
 export async function fetchDiagnosticosDashboard() {
   noStore();
