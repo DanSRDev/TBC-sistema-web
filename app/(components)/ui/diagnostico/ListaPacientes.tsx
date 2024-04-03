@@ -1,5 +1,3 @@
-'use client';
-import { fetchPacientesList } from "@/app/lib/data";
 import {
   Button,
   Table,
@@ -9,20 +7,24 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import BackButton from "./BackButton";
+import React, { useState } from "react";
 import { Paciente } from "@/app/lib/definitions";
+import { useRouter } from "next/navigation";
+import ListaPacientesItem from "./ListaPacientesItem";
 
 type Props = {
-  paciente: string,
-  pacientes: Paciente[]
+  pacientes: Paciente[];
+  setPaciente: React.Dispatch<React.SetStateAction<Paciente | undefined>>;
 };
 
-export default function ListaPacientes({paciente, pacientes}: Props) {
+export default function ListaPacientes({ pacientes, setPaciente }: Props) {
+  const [selectedPaciente, setSelectedPaciente] = useState<Paciente>();
+  const router = useRouter();
 
-  const handleClickPaciente = (name :string) => {
-    paciente= name;
-  }
+  const applySelectedPaciente = () => {
+    setPaciente(selectedPaciente);
+    router.back();
+  };
 
   return (
     <div className="flex flex-col w-full">
@@ -35,27 +37,33 @@ export default function ListaPacientes({paciente, pacientes}: Props) {
                 <b>DNI</b>
               </TableCell>
               <TableCell>
-                <b>Nombres</b>
+                <b>Apellidos</b>
               </TableCell>
               <TableCell>
-                <b>Apellidos</b>
+                <b>Nombres</b>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {pacientes.map((paciente) => (
-              <TableRow key={paciente.id} className="cursor-pointer hover:bg-blue-100" onClick={() => handleClickPaciente(paciente.nombres)}>
-                <TableCell>{paciente.dni}</TableCell>
-                <TableCell>{paciente.apellidos}</TableCell>
-                <TableCell>{paciente.nombres}</TableCell>
-              </TableRow>
+              <ListaPacientesItem
+                key={paciente.id}
+                paciente={paciente}
+                setSelectedPaciente={setSelectedPaciente}
+                clicked={selectedPaciente === paciente}
+              />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <div className="text-right">
-        <Button>Escoger paciente</Button>
-        <BackButton />
+        <Button
+          onClick={applySelectedPaciente}
+          disabled={selectedPaciente == undefined}
+        >
+          Escoger paciente
+        </Button>
+        <Button onClick={router.back}>Cancelar</Button>
       </div>
     </div>
   );
