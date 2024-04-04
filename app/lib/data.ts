@@ -46,6 +46,8 @@ export async function fetchDiagnosticos() {
   }
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export async function fetchHistorialDiagnosticos() {
   noStore();
 
@@ -64,6 +66,61 @@ export async function fetchHistorialDiagnosticos() {
   }
 }
 
+export async function fetchFilteredDiagnosticos(
+  query: string,
+  currentPage: number
+) {
+  noStore();
+
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const data = await sql<DiagnosticoHistorial>`
+      SELECT diag.id, d.nombres as doc_nombres, d.apellidos as doc_apellidos, p.nombres as pac_nombres, p.apellidos as pac_apellidos, diag.fecha, diag.resultado 
+      FROM diagnosticos diag
+      LEFT JOIN doctores d ON diag.doctor_id = d.id
+      LEFT JOIN pacientes p ON diag.paciente_id = p.id
+      WHERE
+        p.nombres ILIKE ${`%${query}%`} OR
+        p.apellidos ILIKE ${`%${query}%`} OR
+        d.nombres ILIKE ${`%${query}%`} OR
+        d.apellidos ILIKE ${`%${query}%`} OR
+        diag.fecha::text ILIKE ${`%${query}%`} OR
+        diag.resultado ILIKE ${`%${query}%`}
+      ORDER BY diag.fecha DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+      `;
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch diagnosticos data.");
+  }
+}
+
+export async function fetchDiagnosticosPages(query: string) {
+  noStore();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM diagnosticos diag
+    JOIN pacientes p ON diag.paciente_id = p.id
+    JOIN doctores d ON diag.doctor_id = d.id
+    WHERE
+      p.nombres ILIKE ${`%${query}%`} OR
+      p.apellidos ILIKE ${`%${query}%`} OR
+      d.nombres ILIKE ${`%${query}%`} OR
+      d.apellidos ILIKE ${`%${query}%`} OR
+      diag.fecha::text ILIKE ${`%${query}%`} OR
+      diag.resultado ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of invoices.");
+  }
+}
 
 export async function fetchDiagnosticosDashboard() {
   noStore();
@@ -98,8 +155,7 @@ export async function fetchPacientesList() {
   noStore();
 
   try {
-    const data =
-      await sql<Paciente>`
+    const data = await sql<Paciente>`
         SELECT pacientes.id, pacientes.dni, pacientes.nombres, pacientes.apellidos
         FROM pacientes
         ORDER BY pacientes.apellidos ASC`;
