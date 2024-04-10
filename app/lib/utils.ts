@@ -12,6 +12,19 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
+export const cambiarFormatoFecha = (fecha: string ) => {
+  // Dividir la fecha en día, mes y año
+  const partes = fecha.split('/');
+  const dia = partes[0];
+  const mes = partes[1];
+  const año = partes[2];
+  
+  // Construir la nueva fecha en formato "MM/DD/YYYY"
+  const nuevaFecha = `${mes}/${dia}/${año}`;
+  
+  return nuevaFecha;
+}
+
 export const generatePagination = (currentPage: number, totalPages: number) => {
   // If the total number of pages is 7 or less,
   // display all pages without any ellipsis.

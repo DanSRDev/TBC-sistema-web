@@ -16,6 +16,7 @@ import { Paciente } from "@/app/lib/definitions";
 import EditarPaciente from "./EditarPaciente";
 import Link from "next/link";
 import AgregarPaciente from "./AgregarPaciente";
+import EliminarPaciente from "./EliminarPaciente";
 
 type Props = {
   pacientes: Paciente[];
@@ -64,7 +65,7 @@ export default function TablePacientes({
                 <TableCell>
                   {formatDateToLocal(paciente.fecha_nacimiento)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex gap-5">
                   <Link href="?editar=true">
                     <EditIcon
                       fontSize="small"
@@ -73,7 +74,14 @@ export default function TablePacientes({
                       }}
                     />
                   </Link>
-                  <DeleteIcon fontSize="small" />
+                  <Link href="?eliminar=true">
+                    <DeleteIcon
+                      fontSize="small"
+                      onClick={() => {
+                        setPaciente(paciente);
+                      }}
+                    />
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}
@@ -88,6 +96,11 @@ export default function TablePacientes({
       {editar && paciente && (
         <Modal>
           <EditarPaciente paciente={paciente} />
+        </Modal>
+      )}
+      {eliminar && paciente && (
+        <Modal>
+          <EliminarPaciente paciente={paciente} />
         </Modal>
       )}
     </>
