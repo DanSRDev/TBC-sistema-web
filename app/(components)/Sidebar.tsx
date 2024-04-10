@@ -9,6 +9,7 @@ type Props = {};
 const links = [
   { name: "Dashboard", href: "/sistema/dashboard" },
   { name: "Diagnostico", href: "/sistema/diagnostico" },
+  { name: "Pacientes", href: "/sistema/pacientes" },
   { name: "Historial", href: "/sistema/historial" },
 ];
 

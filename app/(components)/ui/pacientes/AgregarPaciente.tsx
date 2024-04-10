@@ -1,14 +1,11 @@
 import { Button, TextField } from "@mui/material";
 import React from "react";
 import { createPaciente } from "@/app/lib/actions";
-import { Paciente } from "@/app/lib/definitions";
 import { useRouter } from "next/navigation";
 
-type Props = {
-  setPaciente: React.Dispatch<React.SetStateAction<Paciente | undefined>>;
-};
+type Props = {};
 
-export default function AgregarPaciente({ setPaciente }: Props) {
+export default function AgregarPaciente({}: Props) {
   const router = useRouter();
   return (
     <form action={createPaciente}>

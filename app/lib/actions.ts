@@ -2,6 +2,7 @@
 
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export type State = {
@@ -20,8 +21,9 @@ export async function createPaciente(formData: FormData) {
   const nombres = formData.get("nombres")?.toString();
   const apellidos = formData.get("apellidos")?.toString();
   const fechaNacimiento = formData.get("fechaNacimiento")?.toString();
+  console.log(fechaNacimiento)
 
-  // Insert data into the database
+/*   // Insert data into the database
   try {
     await sql`
       INSERT INTO pacientes (dni, nombres, apellidos, fecha_nacimiento)
@@ -32,10 +34,20 @@ export async function createPaciente(formData: FormData) {
     return {
       message: "Database Error: Failed to Create Paciente.",
     };
+  } */
+
+  const headersList = headers();
+  const fullUrl = headersList.get("referer") || "";
+
+  if (fullUrl.includes("/sistema/diagnostico")) {
+    revalidatePath("/sistema/diagnostico");
+    redirect("/sistema/diagnostico");
   }
 
-  revalidatePath("/sistema/diagnostico");
-  redirect("/sistema/diagnostico");
+  if (fullUrl.includes("/sistema/pacientes")) {
+    revalidatePath("/sistema/pacientes");
+    redirect("/sistema/pacientes");
+  }
 }
 
 export async function createDiagnostico(pacienteId: string, resultado: string) {

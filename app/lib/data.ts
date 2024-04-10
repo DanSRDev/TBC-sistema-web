@@ -118,7 +118,7 @@ export async function fetchDiagnosticosPages(query: string) {
     return totalPages;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch total number of invoices.");
+    throw new Error("Failed to fetch total number of diagnosticos.");
   }
 }
 
@@ -166,23 +166,45 @@ export async function fetchPacientesList() {
   }
 }
 
-export async function fetchFilteredPacientes(query: string) {
+export async function fetchFilteredPacientes(
+  query: string,
+  currentPage: number
+) {
   noStore();
 
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
   try {
-    const data = await sql<FilteredPacientes>`
-		SELECT pacientes.id, pacientes.nombres, pacientes.apellidos
-		FROM pacientes
+    const data = await sql<Paciente>`
+		SELECT * FROM pacientes
 		WHERE
 		  pacientes.nombres ILIKE ${`%${query}%`} OR
       pacientes.apellidos ILIKE ${`%${query}%`}
-		GROUP BY pacientes.id, pacientes.nombres, pacientes.apellidos
-		ORDER BY pacientes.nombres ASC
+		ORDER BY pacientes.apellidos ASC
+    LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
 	  `;
     return data.rows;
   } catch (err) {
     console.error("Database Error:", err);
     throw new Error("Failed to fetch filteres pacientes data.");
+  }
+}
+
+export async function fetchPacientesPages(query: string) {
+  noStore();
+
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM pacientes
+    WHERE
+      pacientes.nombres ILIKE ${`%${query}%`} OR
+      pacientes.apellidos ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of pacientes.");
   }
 }
 

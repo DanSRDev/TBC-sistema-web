@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Modal from "@/app/(components)/ui/Modal";
 import Link from "next/link";
 import ListaPacientes from "@/app/(components)/ui/diagnostico/ListaPacientes";
-import AgregarPaciente from "@/app/(components)/ui/diagnostico/AgregarPaciente";
+import AgregarPaciente from "@/app/(components)/ui/pacientes/AgregarPaciente";
 import { Paciente } from "@/app/lib/definitions";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModuloDiagnostico from "./ModuloDiagnostico";
@@ -59,11 +59,11 @@ export default function PacienteDiagnostico({
 
         {agregar && (
           <Modal>
-            <AgregarPaciente setPaciente={setPaciente} />
+            <AgregarPaciente />
           </Modal>
         )}
       </div>
-      <ModuloDiagnostico pacienteId={paciente?.id}/>
+      <ModuloDiagnostico pacienteId={paciente?.id} />
     </>
   );
 }

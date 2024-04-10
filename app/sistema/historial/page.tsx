@@ -1,19 +1,7 @@
-import ListaDiagnosticosItem from "@/app/(components)/ui/historial/ListaDiagnosticosItem";
 import Pagination from "@/app/(components)/ui/historial/Pagination";
 import Search from "@/app/(components)/ui/historial/Search";
 import TableHistorial from "@/app/(components)/ui/historial/TableHistorial";
-import {
-  fetchDiagnosticosPages,
-  fetchHistorialDiagnosticos,
-} from "@/app/lib/data";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { fetchDiagnosticosPages } from "@/app/lib/data";
 import { Metadata } from "next";
 import React from "react";
 
