@@ -27,12 +27,12 @@ export default function ListaPacientes({ pacientes, setPaciente }: Props) {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full max-h-[492px]">
       <h2 className="text-xl font-semibold">Lista de pacientes</h2>
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow className="sticky top-0 bg-white">
               <TableCell>
                 <b>DNI</b>
               </TableCell>
