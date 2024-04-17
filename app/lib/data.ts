@@ -52,9 +52,8 @@ export async function fetchDiagnosticos() {
 
 /* DASHBOARD */
 
-export async function fetchNormalCases() {
+export async function fetchCases(resultado : string) {
   noStore();
-  const resultado = "Normal"
 
   try {
     const count = await sql`SELECT COUNT(*)
@@ -68,23 +67,57 @@ export async function fetchNormalCases() {
   }
 }
 
-export async function fetchTuberculosisCases() {
+export async function fetchDiagnosticosPerYear(resultado : string) {
   noStore();
 
-  const resultado = "Tuberculosis"
-
   try {
-    const count = await sql`SELECT COUNT(*)
-    FROM diagnosticos
-    WHERE resultado = ${resultado}
+    const count = await sql`
+    SELECT 
+      EXTRACT(YEAR FROM fecha) AS año,
+      COUNT(*) AS cantidad
+    FROM 
+      diagnosticos
+    WHERE 
+      resultado = ${resultado}
+    GROUP BY 
+      EXTRACT(YEAR FROM fecha)
+    ORDER BY 
+      año DESC;
   `;
-    return count.rows[0].count;
+    return count.rows;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch diagnosticos data.");
+    throw new Error("Failed to fetch diagnosticos per year data.");
   }
 }
 
+export async function fetchDiagnosticosLastYear(resultado : string) {
+  noStore();
+
+  try {
+    const count = await sql`
+    SELECT 
+      EXTRACT(YEAR FROM fecha) AS año,
+      EXTRACT(MONTH FROM fecha) AS mes,
+      COUNT(*) AS cantidad
+    FROM 
+      diagnosticos
+    WHERE 
+      fecha >= CURRENT_DATE - INTERVAL '1 year' AND
+      resultado = ${resultado}
+    GROUP BY 
+      EXTRACT(YEAR FROM fecha),
+      EXTRACT(MONTH FROM fecha)
+    ORDER BY 
+      año DESC, 
+      mes DESC;
+  `;
+    return count.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch diagnosticos last year data.");
+  }
+}
 
 /* DIAGNOSTICO */
 

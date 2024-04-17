@@ -50,3 +50,14 @@ export type FilteredPacientes = {
   nombres: string;
   apellidos: string;
 };
+
+export type Datos = {
+  año: string;
+  cantidad: string;
+};
+
+export type DatosUltimoAño = {
+  año: string;
+  mes: string;
+  cantidad: string;
+};
