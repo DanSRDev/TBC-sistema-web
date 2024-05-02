@@ -1,0 +1,16 @@
+import React from "react";
+
+import RegisterForm from "../(components)/RegisterForm";
+import Image from "next/image";
+
+type Props = {};
+
+export default function Register({}: Props) {
+  return (
+    <div className="h-screen flex bg-gray-800">
+      <div className="flex flex-1 justify-center items-center">
+        <RegisterForm />
+      </div>
+    </div>
+  );
+}

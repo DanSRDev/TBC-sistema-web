@@ -8,6 +8,7 @@ import { cambiarFormatoFecha } from "./utils";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
+const bcrypt = require("bcrypt");
 export type State = {
   errors?: {
     dni?: string;
@@ -17,6 +18,32 @@ export type State = {
   };
   message?: string | null;
 };
+
+export async function createDoctor(formData: FormData) {
+  // Prepare data for insertion into the database
+  const dni = formData.get("dni")?.toString();
+  const nombres = formData.get("nombres")?.toString();
+  const apellidos = formData.get("apellidos")?.toString();
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO doctores (dni, nombres, apellidos, email, password)
+      VALUES (${dni}, ${nombres}, ${apellidos}, ${email}, ${hashedPassword})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: "Database Error: Failed to Create Doctor.",
+    };
+  }
+
+  revalidatePath("/login");
+  redirect("/login");
+}
 
 export async function createPaciente(formData: FormData) {
   // Prepare data for insertion into the database
