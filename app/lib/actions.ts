@@ -7,25 +7,107 @@ import { redirect } from "next/navigation";
 import { cambiarFormatoFecha } from "./utils";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-
+import { z } from "zod";
 const bcrypt = require("bcrypt");
-export type State = {
+
+const DoctorFormSchema = z.object({
+  id: z.string(),
+  dni: z
+    .string({
+      invalid_type_error: "Ingrese un DNI válido.",
+    })
+    .length(8, { message: "Ingrese un DNI válido." }),
+  nombres: z
+    .string({
+      invalid_type_error: "Ingrese sus nombres.",
+    })
+    .min(1, { message: "Ingrese sus nombres." }),
+  apellidos: z
+    .string({
+      invalid_type_error: "Ingrese sus apellidos.",
+    })
+    .min(1, { message: "Ingrese sus apellidos." }),
+  email: z
+    .string({
+      invalid_type_error: "Ingrese su correo electronico.",
+    })
+    .email({ message: "Ingrese un correo electronico válido." }),
+  password: z
+    .string({
+      invalid_type_error: "Ingrese una contraseña.",
+    })
+    .min(1, { message: "Ingrese una contraseña." }),
+});
+
+const PacienteFormSchema = z.object({
+  id: z.string(),
+  dni: z
+    .string({
+      invalid_type_error: "Ingrese un DNI válido.",
+    })
+    .length(8, { message: "Ingrese un DNI válido." }),
+  nombres: z
+    .string({
+      invalid_type_error: "Ingrese los nombres del paciente.",
+    })
+    .min(1, { message: "Ingrese los nombres del paciente" }),
+  apellidos: z
+    .string({
+      invalid_type_error: "Ingrese los apellidos del paciente.",
+    })
+    .min(1, { message: "Ingrese los apellidos del paciente." }),
+  fechaNacimiento: z
+    .string({
+      invalid_type_error: "Ingrese la fecha de nacimiento del paciente.",
+    })
+    .min(1, { message: "Ingrese la fecha de nacimiento del paciente." }),
+});
+
+const CreateDoctor = DoctorFormSchema.omit({ id: true });
+const CreatePaciente = PacienteFormSchema.omit({ id: true });
+const UpdatePaciente = PacienteFormSchema.omit({ id: true });
+
+export type DoctorState = {
   errors?: {
-    dni?: string;
-    nombres?: string;
-    apellidos?: string;
-    fechaNacimineto?: string;
+    dni?: string[];
+    nombres?: string[];
+    apellidos?: string[];
+    email?: string[];
+    password?: string[];
   };
   message?: string | null;
 };
 
-export async function createDoctor(formData: FormData) {
+export type PacienteState = {
+  errors?: {
+    dni?: string[];
+    nombres?: string[];
+    apellidos?: string[];
+    fechaNacimiento?: string[];
+  };
+  message?: string | null;
+};
+
+export async function createDoctor(prevState: DoctorState, formData: FormData) {
+  // Validate form fields using Zod
+  const validatedFields = CreateDoctor.safeParse({
+    dni: formData.get("dni"),
+    nombres: formData.get("nombres"),
+    apellidos: formData.get("apellidos"),
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Doctor.",
+    };
+  }
+
   // Prepare data for insertion into the database
-  const dni = formData.get("dni")?.toString();
-  const nombres = formData.get("nombres")?.toString();
-  const apellidos = formData.get("apellidos")?.toString();
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
+  const { dni, nombres, apellidos, email, password } = validatedFields.data;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Insert data into the database
@@ -45,12 +127,28 @@ export async function createDoctor(formData: FormData) {
   redirect("/login");
 }
 
-export async function createPaciente(formData: FormData) {
+export async function createPaciente(
+  prevState: PacienteState,
+  formData: FormData
+) {
+  // Validate form fields using Zod
+  const validatedFields = CreatePaciente.safeParse({
+    dni: formData.get("dni"),
+    nombres: formData.get("nombres"),
+    apellidos: formData.get("apellidos"),
+    fechaNacimiento: formData.get("fechaNacimiento"),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Paciente.",
+    };
+  }
+
   // Prepare data for insertion into the database
-  const dni = formData.get("dni")?.toString();
-  const nombres = formData.get("nombres")?.toString();
-  const apellidos = formData.get("apellidos")?.toString();
-  const fechaNacimiento = formData.get("fechaNacimiento")?.toString();
+  const { dni, nombres, apellidos, fechaNacimiento } = validatedFields.data;
   let fechaFormateada;
 
   if (fechaNacimiento) {
@@ -76,20 +174,35 @@ export async function createPaciente(formData: FormData) {
   if (fullUrl.includes("/sistema/diagnostico")) {
     revalidatePath("/sistema/diagnostico");
     redirect("/sistema/diagnostico");
-  }
-
-  if (fullUrl.includes("/sistema/pacientes")) {
+  } else {
     revalidatePath("/sistema/pacientes");
     redirect("/sistema/pacientes");
   }
 }
 
-export async function updatePaciente(id: string, formData: FormData) {
+export async function updatePaciente(
+  id: string,
+  prevState: PacienteState,
+  formData: FormData
+) {
+  // Validate form fields using Zod
+  const validatedFields = UpdatePaciente.safeParse({
+    dni: formData.get("dni"),
+    nombres: formData.get("nombres"),
+    apellidos: formData.get("apellidos"),
+    fechaNacimiento: formData.get("fechaNacimiento"),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: "Missing Fields. Failed to Create Paciente.",
+    };
+  }
+
   // Prepare data for insertion into the database
-  const dni = formData.get("dni")?.toString();
-  const nombres = formData.get("nombres")?.toString();
-  const apellidos = formData.get("apellidos")?.toString();
-  const fechaNacimiento = formData.get("fechaNacimiento")?.toString();
+  const { dni, nombres, apellidos, fechaNacimiento } = validatedFields.data;
   let fechaFormateada;
 
   if (fechaNacimiento) {
