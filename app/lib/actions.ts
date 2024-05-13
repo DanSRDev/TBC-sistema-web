@@ -260,16 +260,19 @@ export async function createDiagnostico(pacienteId: string, resultado: string) {
   redirect("/sistema/diagnostico");
 }
 
-export async function authenticate(formData: FormData) {
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData
+) {
   try {
     await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return "Invalid credentials.";
+          return "Correo electrónico o contraseña incorrectos.";
         default:
-          return "Something went wrong.";
+          return "Algo salio mal.";
       }
     }
     throw error;

@@ -8,8 +8,11 @@ import Link from "next/link";
 type Props = {};
 
 export default function LoginForm({}: Props) {
+
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+
   return (
-    <form action={authenticate} className="space-y-3 w-[360px]">
+    <form action={dispatch} className="space-y-3 w-[360px]">
       <div className="flex-1 rounded-lg bg-gray-900 px-8 pb-8 pt-10">
         <h1 className="mb-3 text-2xl text-white font-bold">Iniciar Sesión</h1>
         <div className="w-full">
@@ -46,7 +49,6 @@ export default function LoginForm({}: Props) {
                 name="password"
                 placeholder="ingrese su contraseña"
                 required
-                minLength={6}
               />
             </div>
           </div>
@@ -58,7 +60,7 @@ export default function LoginForm({}: Props) {
           </Link>
         </p>
         <LoginButton />
-        {/* <div
+        <div
           className="flex h-8 items-end space-x-1"
           aria-live="polite"
           aria-atomic="true"
@@ -68,7 +70,7 @@ export default function LoginForm({}: Props) {
               <p className="text-sm text-red-500">{errorMessage}</p>
             </>
           )}
-        </div> */}
+        </div> 
       </div>
     </form>
   );
