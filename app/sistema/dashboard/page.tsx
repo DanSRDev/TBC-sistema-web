@@ -2,9 +2,14 @@ import CasesChart from "@/app/(components)/ui/dashboard/CasesChart";
 import DiagLastYearChart from "@/app/(components)/ui/dashboard/DiagLastYearChart";
 import DiagPerYearChart from "@/app/(components)/ui/dashboard/DiagPerYearChart";
 import { PieChartSkeleton, RevenueChartSkeleton } from "@/app/(components)/ui/skeletons";
+import { Metadata } from "next";
 import React, { Suspense } from "react";
 
 type Props = {};
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
 
 export default async function Dashboard({}: Props) {
   return (

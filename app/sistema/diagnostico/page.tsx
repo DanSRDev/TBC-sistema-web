@@ -1,9 +1,14 @@
 import React from "react";
 import { fetchPacientesList } from "@/app/lib/data";
 import PacienteDiagnostico from "@/app/(components)/ui/diagnostico/PacienteDiagnostico";
+import { Metadata } from "next";
 
 type SearchParamProps = {
   searchParams: Record<string, string> | null | undefined;
+};
+
+export const metadata: Metadata = {
+  title: 'Módulo de Diagnóstico',
 };
 
 export default async function Diagnostico({ searchParams }: SearchParamProps) {

@@ -5,15 +5,15 @@ import { fetchDiagnosticosPages } from "@/app/lib/data";
 import { Metadata } from "next";
 import React from "react";
 
-export const metadata: Metadata = {
-  title: "Historial",
-};
-
 type Props = {
   searchParams?: {
     query?: string;
     page?: string;
   };
+};
+
+export const metadata: Metadata = {
+  title: "Historial",
 };
 
 export default async function Historial({ searchParams }: Props) {

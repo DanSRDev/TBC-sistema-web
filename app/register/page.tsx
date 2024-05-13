@@ -1,9 +1,12 @@
 import React from "react";
-
 import RegisterForm from "../(components)/RegisterForm";
-import Image from "next/image";
+import { Metadata } from "next";
 
 type Props = {};
+
+export const metadata: Metadata = {
+  title: 'Registrarse',
+};
 
 export default function Register({}: Props) {
   return (

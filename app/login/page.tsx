@@ -1,8 +1,12 @@
 import React from "react";
 import LoginForm from "../(components)/LoginForm";
-import Image from "next/image";
+import { Metadata } from "next";
 
 type Props = {};
+
+export const metadata: Metadata = {
+  title: 'Iniciar Sesión',
+};
 
 export default function Login({}: Props) {
   return (

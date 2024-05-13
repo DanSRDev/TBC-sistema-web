@@ -3,6 +3,7 @@ import Search from "@/app/(components)/ui/historial/Search";
 import TablePacientes from "@/app/(components)/ui/pacientes/TablePacientes";
 import { fetchFilteredPacientes, fetchPacientesPages } from "@/app/lib/data";
 import AddBoxIcon from "@mui/icons-material/AddBox";
+import { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 
@@ -15,6 +16,10 @@ type Props = {
     editar?: string;
     eliminar?: string;
   };
+};
+
+export const metadata: Metadata = {
+  title: 'Pacientes',
 };
 
 export default async function page({ searchParams }: Props) {
