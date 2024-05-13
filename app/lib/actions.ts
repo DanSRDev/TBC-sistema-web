@@ -238,9 +238,8 @@ export async function deletePaciente(id: string) {
   redirect("/sistema/pacientes");
 }
 
-export async function createDiagnostico(pacienteId: string, resultado: string) {
+export async function createDiagnostico(doctorId: string, pacienteId: string, resultado: string) {
   // Prepare data for insertion into the database
-  const doctorId = "410544b2-4001-4271-9855-fec4b6a6400a";
   const fecha = new Date().toISOString().split("T")[0];
 
   // Insert data into the database

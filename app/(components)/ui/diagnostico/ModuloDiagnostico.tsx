@@ -5,9 +5,10 @@ import { createDiagnostico } from "@/app/lib/actions";
 
 type Props = {
   pacienteId: string | undefined;
+  doctorId: string | undefined;
 };
 
-export default function ModuloDiagnostico({ pacienteId }: Props) {
+export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
   const [predictionResult, setPredictionResult] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>("");
   const [imgDisplay, setImgDisplay] = useState<string>("disabled");
@@ -54,8 +55,8 @@ export default function ModuloDiagnostico({ pacienteId }: Props) {
     if (result) {
       setPredictionResult("Resultado de la detección: " + result);
     }
-    if (result && pacienteId) {
-      await createDiagnostico(pacienteId, result);
+    if (result && pacienteId && doctorId) {
+      await createDiagnostico(doctorId, pacienteId, result);
     }
   };
 

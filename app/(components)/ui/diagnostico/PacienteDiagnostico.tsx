@@ -12,12 +12,14 @@ type Props = {
   pacientes: Paciente[];
   agregar?: string;
   escoger?: string;
+  doctorId?: string;
 };
 
 export default function PacienteDiagnostico({
   pacientes,
   agregar,
   escoger,
+  doctorId,
 }: Props) {
   const [paciente, setPaciente] = useState<Paciente>();
   return (
@@ -63,7 +65,7 @@ export default function PacienteDiagnostico({
           </Modal>
         )}
       </div>
-      <ModuloDiagnostico pacienteId={paciente?.id} />
+      <ModuloDiagnostico pacienteId={paciente?.id} doctorId={doctorId} />
     </>
   );
 }
