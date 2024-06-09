@@ -2,7 +2,6 @@ import React, { ChangeEvent, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { handlePredictClick } from "@/app/lib/diagnose";
 import { createDiagnostico, uploadImage } from "@/app/lib/actions";
-import { log } from "console";
 
 type Props = {
   pacienteId: string | undefined;
@@ -52,7 +51,6 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         setFile(reader.result);
-        console.log("Reader " + reader.result);
       };
     }
   }
@@ -63,17 +61,14 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
       setPredictionResult("Resultado de la detección: " + result);
     }
 
-    if (typeof file !== 'string') {
-      alert('Please select a valid image');
+    if (typeof file !== "string") {
+      alert("Please select a valid image");
       return;
     }
 
-    console.log("subiendo imagen")
+    console.log("subiendo imagen");
     const imagenUrl = await uploadImage(file);
-    console.log("imagen subida")
-
-    console.log("File: " + file)
-    console.log("url: " + imagenUrl)
+    console.log("imagen subida");
 
     if (result && pacienteId && doctorId && imagenUrl) {
       await createDiagnostico(doctorId, pacienteId, result, imagenUrl);

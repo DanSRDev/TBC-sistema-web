@@ -1,7 +1,7 @@
 import { Paciente } from "@/app/lib/definitions";
 import { TableCell, TableRow } from "@mui/material";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React from "react";
 
 type Props = {
   paciente: Paciente;

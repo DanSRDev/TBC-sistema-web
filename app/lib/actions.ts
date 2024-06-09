@@ -8,7 +8,7 @@ import { cambiarFormatoFecha } from "./utils";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { z } from "zod";
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 const bcrypt = require("bcrypt");
 
 const DoctorFormSchema = z.object({
@@ -239,7 +239,12 @@ export async function deletePaciente(id: string) {
   redirect("/sistema/pacientes");
 }
 
-export async function createDiagnostico(doctorId: string, pacienteId: string, resultado: string, imagenUrl: string) {
+export async function createDiagnostico(
+  doctorId: string,
+  pacienteId: string,
+  resultado: string,
+  imagenUrl: string
+) {
   // Prepare data for insertion into the database
   const fecha = new Date().toISOString().split("T")[0];
 
@@ -286,15 +291,15 @@ cloudinary.config({
 });
 
 export async function uploadImage(file: string) {
-
   try {
     const result = await cloudinary.uploader.upload(file, {
-      folder: 'images',
+      folder: "images",
+      quality: "auto",
+      fetch_format: "auto",
     });
-    console.log("Result: " + result)
     return result.secure_url;
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error("Error uploading image:", error);
     return null;
   }
 }

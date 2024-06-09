@@ -4,8 +4,6 @@ import {
   Paciente,
   Diagnostico,
   DiagnosticoDashboard,
-  DiagnosticosPaciente,
-  FilteredPacientes,
   DiagnosticoHistorial,
 } from "./definitions";
 import { unstable_noStore as noStore } from "next/cache";
