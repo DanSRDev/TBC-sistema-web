@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { handlePredictClick } from "@/app/lib/diagnose";
-import { createDiagnostico } from "@/app/lib/actions";
+import { createDiagnostico, uploadImage } from "@/app/lib/actions";
+import { log } from "console";
 
 type Props = {
   pacienteId: string | undefined;
@@ -16,6 +17,8 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
 
   const [switchState, setSwitchState] = useState<boolean>(false);
   const [usedModel, setUsedModel] = useState<string>("Basic Model");
+
+  const [file, setFile] = useState<string | ArrayBuffer | null>(null);
 
   if (pacienteId === undefined && imageSrc !== "") {
     setImgDisplay("disabled");
@@ -47,6 +50,10 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
       };
 
       reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        setFile(reader.result);
+        console.log("Reader " + reader.result);
+      };
     }
   }
 
@@ -55,8 +62,21 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
     if (result) {
       setPredictionResult("Resultado de la detección: " + result);
     }
-    if (result && pacienteId && doctorId) {
-      await createDiagnostico(doctorId, pacienteId, result);
+
+    if (typeof file !== 'string') {
+      alert('Please select a valid image');
+      return;
+    }
+
+    console.log("subiendo imagen")
+    const imagenUrl = await uploadImage(file);
+    console.log("imagen subida")
+
+    console.log("File: " + file)
+    console.log("url: " + imagenUrl)
+
+    if (result && pacienteId && doctorId && imagenUrl) {
+      await createDiagnostico(doctorId, pacienteId, result, imagenUrl);
     }
   };
 
