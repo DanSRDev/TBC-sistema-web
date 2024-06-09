@@ -52,7 +52,7 @@ export async function fetchDiagnosticos() {
 
 /* DASHBOARD */
 
-export async function fetchCases(resultado : string) {
+export async function fetchCases(resultado: string) {
   noStore();
 
   try {
@@ -67,7 +67,7 @@ export async function fetchCases(resultado : string) {
   }
 }
 
-export async function fetchDiagnosticosPerYear(resultado : string) {
+export async function fetchDiagnosticosPerYear(resultado: string) {
   noStore();
 
   try {
@@ -91,7 +91,7 @@ export async function fetchDiagnosticosPerYear(resultado : string) {
   }
 }
 
-export async function fetchDiagnosticosLastYear(resultado : string) {
+export async function fetchDiagnosticosLastYear(resultado: string) {
   noStore();
 
   try {
@@ -187,7 +187,7 @@ export async function fetchHistorialDiagnosticos() {
 
   try {
     const data = await sql<DiagnosticoHistorial>`
-      SELECT diag.id, d.nombres as doc_nombres, d.apellidos as doc_apellidos, p.nombres as pac_nombres, p.apellidos as pac_apellidos, diag.fecha, diag.resultado 
+      SELECT diag.id, d.nombres as doc_nombres, d.apellidos as doc_apellidos, p.nombres as pac_nombres, p.apellidos as pac_apellidos, diag.fecha, diag.imagen_url, diag.resultado 
       FROM diagnosticos diag
       LEFT JOIN doctores d ON diag.doctor_id = d.id
       LEFT JOIN pacientes p ON diag.paciente_id = p.id
@@ -210,7 +210,7 @@ export async function fetchFilteredDiagnosticos(
 
   try {
     const data = await sql<DiagnosticoHistorial>`
-      SELECT diag.id, d.nombres as doc_nombres, d.apellidos as doc_apellidos, p.nombres as pac_nombres, p.apellidos as pac_apellidos, diag.fecha, diag.resultado 
+      SELECT diag.id, d.nombres as doc_nombres, d.apellidos as doc_apellidos, p.nombres as pac_nombres, p.apellidos as pac_apellidos, diag.fecha, diag.imagen_url as imagen, diag.resultado 
       FROM diagnosticos diag
       LEFT JOIN doctores d ON diag.doctor_id = d.id
       LEFT JOIN pacientes p ON diag.paciente_id = p.id

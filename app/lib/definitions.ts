@@ -20,6 +20,7 @@ export type Diagnostico = {
   doctor_id: string;
   paciente_id: string;
   fecha: string;
+  imagen: string;
   resultado: "Normal" | "Tuberculosis";
 };
 
@@ -30,6 +31,7 @@ export type DiagnosticoHistorial = {
   pac_nombres: string;
   pac_apellidos: string;
   fecha: string;
+  imagen: string;
   resultado: "Normal" | "Tuberculosis";
 };
 

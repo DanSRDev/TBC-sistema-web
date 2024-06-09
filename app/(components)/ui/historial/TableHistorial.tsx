@@ -1,4 +1,4 @@
-import { fetchFilteredDiagnosticos } from "@/app/lib/data";
+"use client";
 import {
   Table,
   TableBody,
@@ -7,45 +7,70 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import ListaDiagnosticosItem from "./ListaDiagnosticosItem";
+import Modal from "../Modal";
+import { DiagnosticoHistorial } from "@/app/lib/definitions";
+import ImagenDiagnostico from "./ImagenDiagnostico";
 
 type Props = {
-  query: string;
-  currentPage: number;
+  diagnosticos: DiagnosticoHistorial[];
+  show?: string;
 };
 
-export default async function TableHistorial({ query, currentPage }: Props) {
-  const diagnosticos = await fetchFilteredDiagnosticos(query, currentPage);
+export default function TableHistorial({ diagnosticos, show }: Props) {
+  const propDiagnostico: DiagnosticoHistorial = {
+    id: "",
+    doc_nombres: "",
+    doc_apellidos: "",
+    pac_nombres: "",
+    pac_apellidos: "",
+    fecha: "",
+    imagen: "",
+    resultado: "Normal",
+  };
+  const [diagnostico, setDiagnostico] =
+    useState<DiagnosticoHistorial>(propDiagnostico);
 
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow className="sticky top-0 bg-white">
-            <TableCell>
-              <b>Paciente</b>
-            </TableCell>
-            <TableCell>
-              <b>Doctor</b>
-            </TableCell>
-            <TableCell>
-              <b>Fecha</b>
-            </TableCell>
-            <TableCell>
-              <b>Resultado</b>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {diagnosticos.map((diagnostico) => (
-            <ListaDiagnosticosItem
-              key={diagnostico.id}
-              diagnostico={diagnostico}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow className="sticky top-0 bg-white">
+              <TableCell>
+                <b>Paciente</b>
+              </TableCell>
+              <TableCell>
+                <b>Doctor</b>
+              </TableCell>
+              <TableCell>
+                <b>Fecha</b>
+              </TableCell>
+              <TableCell>
+                <b>Imagen</b>
+              </TableCell>
+              <TableCell>
+                <b>Resultado</b>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {diagnosticos.map((diagnostico) => (
+              <ListaDiagnosticosItem
+                key={diagnostico.id}
+                diagnostico={diagnostico}
+                setDiagnostico={setDiagnostico}
+              />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {show && (
+        <Modal>
+          <ImagenDiagnostico diagnostico={diagnostico} />
+        </Modal>
+      )}
+    </>
   );
 }
