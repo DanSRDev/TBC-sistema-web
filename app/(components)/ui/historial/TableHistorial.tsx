@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@mui/material";
 import React, { useState } from "react";
-import ListaDiagnosticosItem from "./ListaDiagnosticosItem";
+import TableDiagnosticosItem from "./TableDiagnosticosItem";
 import Modal from "../Modal";
 import { DiagnosticoHistorial } from "@/app/lib/definitions";
 import ImagenDiagnostico from "./ImagenDiagnostico";
@@ -57,7 +57,7 @@ export default function TableHistorial({ diagnosticos, show }: Props) {
           </TableHead>
           <TableBody>
             {diagnosticos.map((diagnostico) => (
-              <ListaDiagnosticosItem
+              <TableDiagnosticosItem
                 key={diagnostico.id}
                 diagnostico={diagnostico}
                 setDiagnostico={setDiagnostico}

@@ -1,19 +1,28 @@
 import { DiagnosticoHistorial } from "@/app/lib/definitions";
-import { formatDateToLocal } from "@/app/lib/utils";
+import { formatDateToLocal, updateSearchParams } from "@/app/lib/utils";
 import { TableCell, TableRow } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import Link from "next/link";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   diagnostico: DiagnosticoHistorial;
   setDiagnostico: React.Dispatch<React.SetStateAction<DiagnosticoHistorial>>;
 };
 
-export default function ListaDiagnosticosItem({
+export default function TableDiagnosticosItem({
   diagnostico,
   setDiagnostico,
 }: Props) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    setDiagnostico(diagnostico);
+    const newParams = { show: "true" };
+    const newSearch = updateSearchParams(newParams);
+    router.push(newSearch);
+  };
+
   return (
     <TableRow>
       <TableCell>
@@ -24,14 +33,9 @@ export default function ListaDiagnosticosItem({
       </TableCell>
       <TableCell>{formatDateToLocal(diagnostico.fecha)}</TableCell>
       <TableCell>
-        <Link href="?show=true">
-          <VisibilityIcon
-            fontSize="small"
-            onClick={() => {
-              setDiagnostico(diagnostico);
-            }}
-          />
-        </Link>
+        <a onClick={handleClick}>
+          <VisibilityIcon fontSize="small" />
+        </a>
       </TableCell>
       <TableCell>{diagnostico.resultado}</TableCell>
     </TableRow>

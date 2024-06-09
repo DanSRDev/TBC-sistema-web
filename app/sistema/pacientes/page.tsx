@@ -1,10 +1,9 @@
 import Pagination from "@/app/(components)/ui/historial/Pagination";
 import Search from "@/app/(components)/ui/historial/Search";
+import AgregarPacienteButton from "@/app/(components)/ui/pacientes/AgregarPacienteButton";
 import TablePacientes from "@/app/(components)/ui/pacientes/TablePacientes";
 import { fetchFilteredPacientes, fetchPacientesPages } from "@/app/lib/data";
-import AddBoxIcon from "@mui/icons-material/AddBox";
 import { Metadata } from "next";
-import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -19,7 +18,7 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: 'Pacientes',
+  title: "Pacientes",
 };
 
 export default async function page({ searchParams }: Props) {
@@ -36,9 +35,7 @@ export default async function page({ searchParams }: Props) {
       <h1 className="my-8 text-5xl font-semibold">Lista de Pacientes</h1>
       <div className="flex items-center justify-between w-full">
         <Search placeholder="Buscar pacientes..." />
-        <Link href="?agregar=true">
-          <AddBoxIcon className="cursor-pointer" fontSize="large" />
-        </Link>
+        <AgregarPacienteButton />
       </div>
       <TablePacientes
         pacientes={pacientes}

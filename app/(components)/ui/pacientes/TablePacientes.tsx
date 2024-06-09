@@ -1,5 +1,4 @@
 "use client";
-import { formatDateToLocal } from "@/app/lib/utils";
 import {
   Table,
   TableBody,
@@ -8,15 +7,13 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import React, { useState } from "react";
 import Modal from "../Modal";
 import { Paciente } from "@/app/lib/definitions";
 import EditarPaciente from "./EditarPaciente";
-import Link from "next/link";
 import AgregarPaciente from "./AgregarPaciente";
 import EliminarPaciente from "./EliminarPaciente";
+import TablePacientesItem from "./TablePacientesItem";
 
 type Props = {
   pacientes: Paciente[];
@@ -31,7 +28,14 @@ export default function TablePacientes({
   editar,
   eliminar,
 }: Props) {
-  const [paciente, setPaciente] = useState<Paciente>();
+  const propPaciente: Paciente = {
+    id: "",
+    dni: "",
+    nombres: "",
+    apellidos: "",
+    fecha_nacimiento: "",
+  };
+  const [paciente, setPaciente] = useState<Paciente>(propPaciente);
 
   return (
     <>
@@ -58,32 +62,11 @@ export default function TablePacientes({
           </TableHead>
           <TableBody>
             {pacientes.map((paciente) => (
-              <TableRow key={paciente.id}>
-                <TableCell>{paciente.dni}</TableCell>
-                <TableCell>{paciente.apellidos}</TableCell>
-                <TableCell>{paciente.nombres}</TableCell>
-                <TableCell>
-                  {formatDateToLocal(paciente.fecha_nacimiento)}
-                </TableCell>
-                <TableCell className="flex gap-5">
-                  <Link href="?editar=true">
-                    <EditIcon
-                      fontSize="small"
-                      onClick={() => {
-                        setPaciente(paciente);
-                      }}
-                    />
-                  </Link>
-                  <Link href="?eliminar=true">
-                    <DeleteIcon
-                      fontSize="small"
-                      onClick={() => {
-                        setPaciente(paciente);
-                      }}
-                    />
-                  </Link>
-                </TableCell>
-              </TableRow>
+              <TablePacientesItem
+                key={paciente.id}
+                paciente={paciente}
+                setPaciente={setPaciente}
+              />
             ))}
           </TableBody>
         </Table>
@@ -93,12 +76,12 @@ export default function TablePacientes({
           <AgregarPaciente />
         </Modal>
       )}
-      {editar && paciente && (
+      {editar && (
         <Modal>
           <EditarPaciente paciente={paciente} />
         </Modal>
       )}
-      {eliminar && paciente && (
+      {eliminar && (
         <Modal>
           <EliminarPaciente paciente={paciente} />
         </Modal>
