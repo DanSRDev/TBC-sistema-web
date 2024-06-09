@@ -55,18 +55,30 @@ function preprocess(tensor: tf.Tensor3D) {
 
 // Realizar diagnostico
 
-async function performInference(image: HTMLImageElement, switchState : boolean) {
+async function performInference(
+  image: HTMLImageElement,
+  selectedModel: string
+) {
   let model;
   let processedImage;
 
-  if (switchState) {
-    console.log("MobileNet");
-    model = await loadModelMv();
-    processedImage = preprocessImageMv(image);
-  } else {
-    console.log("Basic Model");
-    model = await loadModel();
-    processedImage = preprocessImage(image);
+  switch (selectedModel) {
+    case "Basic Model":
+      console.log("Basic Model");
+      model = await loadModel();
+      processedImage = preprocessImage(image);
+      break;
+    case "MobileNet":
+      console.log("MobileNet");
+      model = await loadModelMv();
+      processedImage = preprocessImageMv(image);
+      break;
+
+    default:
+      console.log("using default Basic Model");
+      model = await loadModel();
+      processedImage = preprocessImage(image);
+      break;
   }
 
   // Realiza la inferencia con el modelo.
@@ -93,11 +105,11 @@ async function performInference(image: HTMLImageElement, switchState : boolean) 
 export async function handlePredictClick(
   imageSrc: string,
   imageRef: React.MutableRefObject<null>,
-  switchState: boolean
+  selectedModel: string
 ) {
   if (imageSrc != undefined) {
     if (imageRef.current) {
-      const result = await performInference(imageRef.current, switchState);
+      const result = await performInference(imageRef.current, selectedModel);
       return result;
     } else {
       console.error("La referencia al elemento de imagen es null.");

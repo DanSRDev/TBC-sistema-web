@@ -2,6 +2,7 @@ import React, { ChangeEvent, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { handlePredictClick } from "@/app/lib/diagnose";
 import { createDiagnostico, uploadImage } from "@/app/lib/actions";
+import ModelButton from "./ModelButton";
 
 type Props = {
   pacienteId: string | undefined;
@@ -14,9 +15,7 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
   const [imgDisplay, setImgDisplay] = useState<string>("disabled");
   const imageRef = useRef(null);
 
-  const [switchState, setSwitchState] = useState<boolean>(false);
   const [usedModel, setUsedModel] = useState<string>("Basic Model");
-
   const [file, setFile] = useState<string | ArrayBuffer | null>(null);
 
   if (pacienteId === undefined && imageSrc !== "") {
@@ -24,15 +23,6 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
     setImageSrc("");
     setPredictionResult("");
   }
-
-  const handleSwitchToggle = () => {
-    setSwitchState(!switchState);
-    if (switchState) {
-      setUsedModel("Basic Model");
-    } else {
-      setUsedModel("MobileNet");
-    }
-  };
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     setPredictionResult(""); // Reinicia el resultado de la predicción
@@ -56,7 +46,7 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
   }
 
   const handleClick = async () => {
-    const result = await handlePredictClick(imageSrc, imageRef, switchState);
+    const result = await handlePredictClick(imageSrc, imageRef, usedModel);
     if (result) {
       setPredictionResult("Resultado de la detección: " + result);
     }
@@ -77,17 +67,7 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
 
   return (
     <div className="flex flex-col justify-center items-center mb-4 border border-black rounded-lg mt-4 w-full h-full">
-      <div className="switch-container text-center">
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={switchState}
-            onChange={handleSwitchToggle}
-          />
-          <span className="btnSwitch"></span>
-        </label>
-        <p>{usedModel}</p>
-      </div>
+      <ModelButton model={usedModel} setModel={setUsedModel} />
       <div className="flex items-center">
         <img
           ref={imageRef}

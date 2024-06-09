@@ -165,10 +165,11 @@ const convertirMesAño = (data: QueryResultRow[]) => {
   return nuevoArreglo;
 };
 
-export const updateSearchParams = (newParams: { [key: string]: string }): string => {
+export const updateSearchParams = (newParams: {
+  [key: string]: string;
+}): string => {
   // Obtener los parámetros de búsqueda actuales
   const currentParams = new URLSearchParams(window.location.search);
-  console.log(currentParams)
 
   // Agregar o actualizar nuevos parámetros
   for (const [key, value] of Object.entries(newParams)) {
