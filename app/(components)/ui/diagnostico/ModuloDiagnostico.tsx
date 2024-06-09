@@ -11,6 +11,7 @@ type Props = {
 
 export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
   const [predictionResult, setPredictionResult] = useState<string>("");
+  const [diagnosticoState, setDiagnosticoState] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>("");
   const [imgDisplay, setImgDisplay] = useState<string>("disabled");
   const imageRef = useRef(null);
@@ -22,10 +23,12 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
     setImgDisplay("disabled");
     setImageSrc("");
     setPredictionResult("");
+    setDiagnosticoState("");
   }
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     setPredictionResult(""); // Reinicia el resultado de la predicción
+    setDiagnosticoState("");
     const file = event.target.files?.[0];
 
     if (file) {
@@ -49,6 +52,7 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
     const result = await handlePredictClick(imageSrc, imageRef, usedModel);
     if (result) {
       setPredictionResult("Resultado de la detección: " + result);
+      setDiagnosticoState("Registrando diagnóstico...");
     }
 
     if (typeof file !== "string") {
@@ -62,6 +66,7 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
 
     if (result && pacienteId && doctorId && imagenUrl) {
       await createDiagnostico(doctorId, pacienteId, result, imagenUrl);
+      setDiagnosticoState("Diagnóstico registrado");
     }
   };
 
@@ -116,6 +121,9 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
       </div>
       <div id="predictionResult" className="text-2xl mt-6 h-10">
         {predictionResult}
+      </div>
+      <div id="diagnosticoState" className="text-lg mt-4 h-10">
+        {diagnosticoState}
       </div>
     </div>
   );
