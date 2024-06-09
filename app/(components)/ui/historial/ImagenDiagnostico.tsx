@@ -14,7 +14,7 @@ export default function ImagenDiagnostico({ diagnostico }: Props) {
 
   return (
     <div className="w-80">
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-end mb-4">
         <CloseIcon onClick={router.back} />
       </div>
       <div className="w-full">
