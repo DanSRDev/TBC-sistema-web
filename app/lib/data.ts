@@ -219,7 +219,7 @@ export async function fetchFilteredDiagnosticos(
         d.apellidos ILIKE ${`%${query}%`} OR
         diag.fecha::text ILIKE ${`%${query}%`} OR
         diag.resultado ILIKE ${`%${query}%`}
-      ORDER BY diag.fecha DESC
+      ORDER BY diag.fecha DESC, diag.id ASC 
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
       `;
     return data.rows;
