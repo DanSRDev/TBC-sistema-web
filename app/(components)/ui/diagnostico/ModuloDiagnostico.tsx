@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useRef, useState } from "react";
 import { clsx } from "clsx";
 import { handlePredictClick } from "@/app/lib/diagnose";
-import { createDiagnostico, uploadImage } from "@/app/lib/actions";
+import { createDiagnostico } from "@/app/lib/actions";
 import ModelButton from "./ModelButton";
 
 type Props = {
@@ -47,6 +47,28 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
       };
     }
   }
+  const cloudinary = require("cloudinary").v2;
+  // Return "https" URLs by setting secure: true
+  cloudinary.config({
+    secure: true,
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!,
+    api_secret: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET!,
+  });
+
+  const uploadImage = async (imagePath: string) => {
+    try {
+      // Upload the image
+      const result = await cloudinary.uploader.upload(imagePath, {
+        folder: "images",
+        quality: "auto",
+        fetch_format: "auto",
+      });
+      return result.secure_url;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleClick = async () => {
     const result = await handlePredictClick(imageSrc, imageRef, usedModel);
@@ -62,11 +84,17 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
 
     console.log("subiendo imagen");
     const imagenUrl = await uploadImage(file);
-    console.log("imagen subida");
+    if (imagenUrl) {
+      console.log("imagen subida");
+    } else {
+      console.log("Error al subir imagen");
+    }
 
     if (result && pacienteId && doctorId && imagenUrl) {
       await createDiagnostico(doctorId, pacienteId, result, imagenUrl);
       setDiagnosticoState("Diagnóstico registrado");
+    } else {
+      setDiagnosticoState("Error al registrar diagnóstico");
     }
   };
 
