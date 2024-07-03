@@ -14,6 +14,13 @@ async function loadModelMv() {
   return model;
 }
 
+async function loadModelResNet() {
+  console.log("Cargando modelo...");
+  const model = await tf.loadGraphModel("/modelresnet/model.json");
+  console.log("Modelo cargado...");
+  return model;
+}
+
 // Preprocesamiento de imagenes
 
 function preprocessImage(image: HTMLImageElement) {
@@ -26,7 +33,7 @@ function preprocessImage(image: HTMLImageElement) {
   return processedImage;
 }
 
-function preprocessImageMv(image: HTMLImageElement) {
+function preprocessImageGraph(image: HTMLImageElement) {
   // Cargamos la imagen en escala de grises (1 canal).
   const tensor = tf.browser.fromPixels(image);
 
@@ -71,9 +78,13 @@ async function performInference(
     case "MobileNet":
       console.log("MobileNet");
       model = await loadModelMv();
-      processedImage = preprocessImageMv(image);
+      processedImage = preprocessImageGraph(image);
       break;
-
+    case "ResNet50":
+      console.log("ResNet50");
+      model = await loadModelResNet();
+      processedImage = preprocessImageGraph(image);
+      break;
     default:
       console.log("using default Basic Model");
       model = await loadModel();

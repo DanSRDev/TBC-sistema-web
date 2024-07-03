@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function ModelButton({ model, setModel }: Props) {
-  const models = ["Basic Model", "MobileNet"];
+  const models = ["Basic Model", "MobileNet", "ResNet50"];
   const [hidden, setHidden] = useState(true);
 
   return (
