@@ -2,7 +2,8 @@ import * as tf from "@tensorflow/tfjs";
 
 async function loadModel() {
   console.log("Cargando modelo...");
-  const model = await tf.loadLayersModel("/model/model.json");
+  //const model = await tf.loadLayersModel("/model/model.json");
+  const model = await tf.loadGraphModel("/model/model.json");
   console.log("Modelo cargado...");
   return model;
 }
@@ -105,10 +106,10 @@ async function performInference(
   const classes = ["Normal", "Tuberculosis"];
 
   console.log("Predicciones:", predictionsArray);
-  console.log("Predicción:", classes[maxIndex]);
+  console.log("Predicción:", classes[maxIndex], " Porcentaje:", Math.floor(predictionsArray[maxIndex] * 100) / 100);
 
   // Devolver resultado
-  const result = classes[maxIndex];
+  const result = `${classes[maxIndex]} (${Math.floor(predictionsArray[maxIndex] * 100)}%)`;
 
   return result;
 }
