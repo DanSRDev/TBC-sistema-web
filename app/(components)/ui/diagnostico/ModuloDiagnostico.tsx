@@ -71,6 +71,10 @@ export default function ModuloDiagnostico({ pacienteId, doctorId }: Props) {
   };
 
   const handleClick = async () => {
+    
+    setPredictionResult("Realizando diagnostico...");
+    setDiagnosticoState("");
+
     const result = await handlePredictClick(imageSrc, imageRef, usedModel);
     if (result) {
       setPredictionResult("Resultado de la detección: " + result);

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "@/app/(components)/ui/Modal";
 import Link from "next/link";
 import ListaPacientes from "@/app/(components)/ui/diagnostico/ListaPacientes";
@@ -7,6 +7,8 @@ import AgregarPaciente from "@/app/(components)/ui/pacientes/AgregarPaciente";
 import { Paciente } from "@/app/lib/definitions";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModuloDiagnostico from "./ModuloDiagnostico";
+import { loadOpenCV } from "@/lib/load-opencv.ts";
+
 
 type Props = {
   pacientes: Paciente[];
@@ -22,6 +24,15 @@ export default function PacienteDiagnostico({
   doctorId,
 }: Props) {
   const [paciente, setPaciente] = useState<Paciente>();
+  const [cvReady, setCvReady] = useState(false);
+
+  useEffect(() => {
+    loadOpenCV().then(() => {
+      console.log("cv loaded:", (window as any).cv);
+      setCvReady(true);
+    });
+  }, []);
+
   return (
     <>
       <div className="flex border border-black rounded-lg p-4 w-full">
